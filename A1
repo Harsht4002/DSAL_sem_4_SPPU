@@ -1,0 +1,84 @@
+#include <iostream>
+#include <string>
+using namespace std;
+struct Entry {
+    string name;
+    string number;
+    bool filled; 
+};
+
+
+class HashTable {
+private:
+    static const int TABLE_SIZE = 10; 
+    Entry table[TABLE_SIZE]; 
+public:
+    HashTable() {
+      
+        for (int i = 0; i < TABLE_SIZE; ++i) {
+            table[i].filled = false;
+        }
+    }
+    int hashFunction(string key) {
+        int sum = 0;
+        for (char c : key) {
+            sum += c;
+        }
+        return sum % TABLE_SIZE;
+    }
+    int linearProbing(int index) {
+        int i = 1;
+        while (table[index].filled) {
+            index = (index + i) % TABLE_SIZE;
+            i++;
+        }
+        return index;
+    }
+    int quadraticProbing(int index) {
+        int i = 1;
+        while (table[index].filled) {
+            index = (index + i * i) % TABLE_SIZE;
+            i++;
+        }
+        return index;
+    }
+    void insertLinear(string name, string number) {
+        int index = hashFunction(name);
+        index = linearProbing(index);
+        table[index] = {name, number, true};
+    }
+    void insertQuadratic(string name, string number) {
+        int index = hashFunction(name);
+        index = quadraticProbing(index);
+        table[index] = {name, number, true};
+    }
+    string search(string name) {
+        int index = hashFunction(name);
+        int i = 1;
+        while (table[index].filled && table[index].name != name) {
+            index = (index + i) % TABLE_SIZE;
+            i++;
+ }
+        if (table[index].filled && table[index].name == name) {
+            return table[index].number;
+        } else {
+            return "Not found";
+        }
+    }
+};
+
+int main() {
+    HashTable ht;
+    ht.insertLinear("John", "1234567890");
+    ht.insertLinear("Alice", "9876543210");
+    ht.insertLinear("Bob", "4567890123");
+    cout << "John's number: " << ht.search("John") << endl;
+    cout << "Alice's number: " << ht.search("Alice") << endl;
+    cout << "Bob's number: " << ht.search("Bob") << endl;
+    ht.insertQuadratic("Dave", "5555555555");
+    ht.insertQuadratic("Eve", "6666666666");
+    cout << "Dave's number: " << ht.search("Dave") << endl;
+    cout << "Eve's number: " << ht.search("Eve") << endl;
+
+    return 0;
+}
