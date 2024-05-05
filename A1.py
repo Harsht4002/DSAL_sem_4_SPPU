@@ -13,7 +13,13 @@ class hashtable:
         for c in name:
             s += ord(c)
         return s % 10
-        
+    def quadprobing(self,name):
+        i=1
+        while(self.data[key].used!=False):
+            key=(key+(i*i))%10
+            i+=1
+        print("combinations required: ",i)
+        return key
     def linprobing(self,key):
         i=1
         while(self.data[key].used!=False):
@@ -22,6 +28,11 @@ class hashtable:
         print("combinations required: ",i)
         return key
     def lininsert(self,name,no):
+        key=self.hashfunc(name)
+        key=self.linprobing(key)
+        self.data[key]=node(name,no)
+        self.data[key].used=True
+    def quadinsert(self,name,no):
         key=self.hashfunc(name)
         key=self.linprobing(key)
         self.data[key]=node(name,no)
@@ -41,4 +52,5 @@ class hashtable:
 h=hashtable()
 h.lininsert("roman",98)
 h.lininsert("norma",85)
+h.quadinsert("sara",23)
 h.search("norma")
